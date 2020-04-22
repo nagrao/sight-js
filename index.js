@@ -47,7 +47,14 @@ class Client {
                         chunks.push(chunk);
                     }).on('end', () => {
                         const buf = Buffer.concat(chunks);
-                        const json = JSON.parse(buf);
+                        let json = {};
+                        try {
+                            //fix for non 200 response code
+                            json = JSON.parse(buf);
+                        } catch(error){
+                            console.log(res.statusCode);
+                            return;
+                        }
                         Array.prototype.push.apply(pages, json.Pages);
                         if (json.Pages.length == 0) {
                             return;
